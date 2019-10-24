@@ -50,5 +50,4 @@
     result = get(url)
     if __name__ == "__main__":
         print("result ", result)  # 当前的执行结果在另一个模块调用时是不会执行的
-
 ```
