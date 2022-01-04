@@ -1,0 +1,88 @@
+
+## 创建web项目
+
+```python
+# 创建项目
+django-admin.py startproject mysite
+
+## 启动项目
+cd mysite
+python manage.py runserver
+```
+
+## 使用mysql并生成自己的model
+
+```python
+pip install pymysql
+```
+
+`/mysite/mysite/settings.py`中配置`DATABASES `
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
+        'NAME': 'test', # 数据库名称
+        'HOST': '127.0.0.1', # 数据库地址，本机 ip 地址 127.0.0.1 
+        'PORT': 3306, # 端口 
+        'USER': 'root',  # 数据库用户名
+        'PASSWORD': 'root', # 数据库密码
+    }
+}
+
+```
+> 如果你使用了 Python2.x 版本这里添加了中文注释，所以你需要在 /mysite/mysite/settings.py 文件头部添加 # -*- coding: UTF-8 -*-
+
+### 引入MySQL模块
+
+```python
+# 在与 settings.py 同级目录下的 __init__.py 中引入模块和进行配置
+import pymysql
+pymysql.install_as_MySQLdb()
+```
+
+### 创建自己的model
+
+> mysite/mysite/models.py 
+
+```python
+from django.db import models
+
+class OperatorLog(models.Model):
+	id = models.AutoField(primary_key=True)
+	operatorName = models.CharField(max_length=32)
+	createTime = models.DateField()
+	operatorUser = models.IntegerField(20)
+	desc = models.CharField(max_length=932)
+
+class SysUser(models.Model):
+	id = models.AutoField(primary_key=True)
+	username = models.CharField(max_length=32)
+	password = models.CharField(max_length=32)
+	userType = models.CharField(max_length=32)
+	createTime = models.DateField()
+	desc = models.CharField(max_length=932)
+```
+
+
+
+### 接下来在 `settings.py` 中找到 `INSTALLED_APPS` 这一项，如下：
+
+```python
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'mysite',               # 添加此项
+)
+```
+
+## 开始生成表
+
+```python
+python manage.py makemigrations mysite  # 让 Django 知道我们在我们的模型有一些变更
+python manage.py migrate mysite   # 创建表结构
+```
